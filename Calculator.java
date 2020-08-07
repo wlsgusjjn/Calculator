@@ -10,6 +10,7 @@ class Calculator{
 	boolean pwr = true;
 	boolean spc = true;
 	boolean Exp = false;
+	boolean inf = false;
 	
 	Calculator(){
 	}
@@ -124,11 +125,9 @@ class Calculator{
 			if(values.charAt(i) == 'e' || values.charAt(i) == 'p')
 				values.replace(i, i+1, spcVal(values.charAt(i)));
 		}
-		System.out.println("changeSpcVal() : " + values.toString());
 	}
 	
 	void smallBki() {
-		System.out.println("smallBki: " + values);
 		int end = 0;
 		ArrayList<Integer> bki = new ArrayList<>();
 		for(int i=0;i<values.length();i++) {
@@ -175,12 +174,9 @@ class Calculator{
 				}
 			}
 		}
-		System.out.println("smallBki() : " + values.toString());
 	}
 	
 	void calSpcOper() {
-
-		System.out.println("calSpcOper: " + values);
 		spc = true;
 		if(values.toString().equals("Infinity"))	return;
 		int end = 0, check = 0;
@@ -207,7 +203,6 @@ class Calculator{
 				}
 			}
 			String temp = values.substring(bki.get(i)+1, end-1);
-			System.out.println(values.toString() + " " + temp + " "+ "bk : " + (bki.get(i)+1) + ", end : " + (end-1));
 			check = -1;
 			double d = 0.0;
 			try {
@@ -239,11 +234,9 @@ class Calculator{
 				}
 			}
 		}
-		System.out.println("calSpcOper() : " + values.toString());
 	}
 	
 	void power() {
-		System.out.println("power: " + values);
 		pwr = true;
 		int start = 0, end = 0, check = 0, count = 0, z = 0;
 		for(int i=0;i<values.length();i++)
@@ -266,8 +259,6 @@ class Calculator{
 							break;
 						}
 					}
-					System.out.println(values.toString() + values.substring(start+1, i-1) + "tmp1s : " + (start+1) + ", end : " + (i-1));
-					System.out.println(values.toString() + values.substring(i+2, end-1) + "tmp2s : " + (i+2) + ", end : " + (end-1));
 					String temp1 = values.substring(start+1, i-1);
 					String temp2 = values.substring(i+2,end-1);
 					double a = 0.0, b = 0.0;
@@ -286,22 +277,18 @@ class Calculator{
 				    		smallBki();
 					    	z++;
 				    	}
-				    	System.out.println(values);
 				    }
 					if(check == 1) {
 						String rs = Double.toString(Math.pow(a, b));
-						System.out.println("a : " + a + ", b : " + b);
 						values.replace(start, end, rs);
 					}
 				}
 			}
 		}
 		if(z != 0)	pwr = false;
-		System.out.println("power() : " + values.toString());
 	}
 	
 	void lastBreakit() {
-		System.out.println("lastBreakit: " + values);
 		values.insert(0, '(');
 		values.append(')');
 		int end = 0;
@@ -338,11 +325,9 @@ class Calculator{
 				}
 			}
 		}
-		System.out.println("lastBreakit() : " + values.toString());
 	}
 	
 	String basicCal(String str) {
-		System.out.println("basicCal: " + values);
 		StringBuilder temp = new StringBuilder();
 		temp.append(str);
 		temp.append('D');
@@ -351,13 +336,16 @@ class Calculator{
 				double x = 0.0, y = 0.0, result = 0.0;
 				int start=0,end=0;
 				for(int j=i-1;j>=0;j--) {
-					System.out.println("char: " + temp.charAt(j) + " start: " + j);
 					if(temp.substring(j, j+1).equals("-"))
 						if(j > 0 && temp.substring(j-1, j).equals("E")){
 							Exp = true;
 							j--;
 							continue;
 						}
+					
+					if(temp.substring(j, j+1).equals("y"))	return "Infinity";
+					if(temp.substring(j, j+1).equals("N"))	return "NaN";
+					
 					if(j == 0) {
 						x = Double.parseDouble(temp.substring(j,i));
 						start = 0;
@@ -376,7 +364,6 @@ class Calculator{
 					}
 				}
 				for(int j=i+1;j<temp.length();j++) {
-					System.out.println("char: " + temp.charAt(j) + " end: " + j + " " + isNotNum(temp.substring(j, j+1)));
 					if(j == i+1 && temp.charAt(i+1) == '-')	continue;
 					if(temp.substring(j, j+1).equals("E"))
 						if(temp.substring(j+1, j+2).equals("-")) {
@@ -384,14 +371,16 @@ class Calculator{
 							j++;
 							continue;
 						}
+					
+					if(temp.substring(j, j+1).equals("I"))	return "Infinity";
+					if(temp.substring(j, j+1).equals("N"))	return "NaN";
+					
 					if(isNotNum(temp.substring(j, j+1))){
-						System.out.println("tlqkf");
 						y = Double.parseDouble(temp.substring(i+1,j));
 						end = j;
 						break;
 					}
 				}
-				System.out.println("char: " + temp.charAt(i) + " start: " + start + " end: " + end);
 				if(temp.charAt(i) == '*') {
 					result = x*y;
 				} else if(temp.charAt(i) == '/'){
@@ -415,7 +404,6 @@ class Calculator{
 			if(temp.charAt(i) == '+' || temp.charAt(i) == '-') {
 				double x = 0.0, y = 0.0, result = 0.0;
 				int start=0,end=0;
-				System.out.println(temp);
 				if(i > 0 && temp.charAt(i-1) == 'E')	continue;
 				
 				for(int j=i-1;j>=0;j--) {
@@ -425,12 +413,18 @@ class Calculator{
 							j--;
 							continue;
 						}
+					
+					if(temp.substring(j, j+1).equals("y"))	return "Infinity";
+					if(temp.substring(j, j+1).equals("N"))	return "NaN";				
+					
 					if(j == 0) {
+						if(inf)	x = 1;
 						x = Double.parseDouble(temp.substring(j,i));
 						start = 0;
 						break;
 					}
 					if(isNotNum(temp.substring(j, j+1))){
+						if(inf)
 						x = Double.parseDouble(temp.substring(j+1,i));
 						start = j+1;
 						break;
@@ -443,6 +437,10 @@ class Calculator{
 							j++;
 							continue;
 						}
+					
+					if(temp.substring(j, j+1).equals("I"))	return "Infinity";
+					if(temp.substring(j, j+1).equals("N"))	return "NaN";
+					
 					if(isNotNum(temp.substring(j, j+1))){
 						y = Double.parseDouble(temp.substring(i+1,j));
 						end = j;
@@ -459,7 +457,6 @@ class Calculator{
 			}
 		}
 		temp.setLength(temp.length() - 1);
-		System.out.println("basicCal() 11: " + temp.toString());
 		return temp.toString();
 	}
 	
@@ -476,7 +473,6 @@ class Calculator{
 	}
 	
 	static boolean fonts(String x) {
-		System.out.println(x.length());
 		if(x.length() > 28 + 340)	return true;
 		else				return false;
 	}
@@ -559,8 +555,6 @@ class Calculator{
 								sb.append(keys[x]);
 							}
 						}
-						System.out.println("sb : " + sb.toString());
-						System.out.println("equ : " + equ.getText());
 					}
 				});
 				z++;
@@ -581,8 +575,6 @@ class Calculator{
 						bl.get(changeList[i]).setText(keys[changeList[i]]);
 					}
 				}
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 			}
 		});
 		
@@ -601,8 +593,6 @@ class Calculator{
 				for(int i=bk.size()-1;i>-1;i--) {
 					tmpSb.append(bk.get(i));
 				}
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				t2.set(tmpSb.toString());
 				t2.run();
 				rs.setText(t2.getResult());
@@ -627,8 +617,6 @@ class Calculator{
 					sb.append("C{(");
 				}
 				bk.add(")}");
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				
 				if(fonts(equ.toString()))	equ.setFont (equ.getFont ().deriveFont (16.0f));
 				else						equ.setFont (equ.getFont ().deriveFont (32.0f));
@@ -642,8 +630,6 @@ class Calculator{
 				sb.setLength(0);
 				rs.setText("");
 				bk.clear();
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 			}
 		});
 
@@ -681,8 +667,6 @@ class Calculator{
 						rs.setText(t2.getResult());
 					}
 				}
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				if(fonts(equ.toString()))	equ.setFont (equ.getFont ().deriveFont (16.0f));
 				else						equ.setFont (equ.getFont ().deriveFont (32.0f));
 			}
@@ -703,8 +687,6 @@ class Calculator{
 				for(int i=bk.size()-1;i>-1;i--) {
 					tmpSb.append(bk.get(i));
 				}
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				t2.set(tmpSb.toString());
 				t2.run();
 				rs.setText(t2.getResult());
@@ -751,8 +733,6 @@ class Calculator{
 						}
 					}
 					bk.add(")}");
-					System.out.println("sb : " + sb.toString());
-					System.out.println("equ : " + equ.getText());
 					if(fonts(equ.toString()))	equ.setFont (equ.getFont ().deriveFont (16.0f));
 					else						equ.setFont (equ.getFont ().deriveFont (32.0f));
 				}
@@ -794,8 +774,6 @@ class Calculator{
 						}
 					}
 				}
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				if(fonts(equ.toString()))	equ.setFont (equ.getFont ().deriveFont (16.0f));
 				else						equ.setFont (equ.getFont ().deriveFont (32.0f));
 			}
@@ -834,8 +812,6 @@ class Calculator{
 					}
 				}
 				bk.add(")]");
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				if(fonts(equ.toString()))	equ.setFont (equ.getFont ().deriveFont (16.0f));
 				else						equ.setFont (equ.getFont ().deriveFont (32.0f));
 			}
@@ -989,8 +965,6 @@ class Calculator{
 						}
 					}
 				}
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				if(fonts(equ.toString()))	equ.setFont (equ.getFont ().deriveFont (16.0f));
 				else						equ.setFont (equ.getFont ().deriveFont (32.0f));
 			}
@@ -1016,8 +990,6 @@ class Calculator{
 					}
 					bk.add(")}");
 				}
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				if(fonts(equ.toString()))	equ.setFont (equ.getFont ().deriveFont (16.0f));
 				else						equ.setFont (equ.getFont ().deriveFont (32.0f));
 			}
@@ -1071,8 +1043,6 @@ class Calculator{
 					for(int i=bk.size()-1;i>-1;i--) {
 						tmpSb.append(bk.get(i));
 					}
-					System.out.println("sb : " + sb.toString());
-					System.out.println("equ : " + equ.getText());
 					t2.set(tmpSb.toString());
 					t2.run();
 					rs.setText(t2.getResult());
@@ -1151,8 +1121,6 @@ class Calculator{
 						for(int i=bk.size()-1;i>-1;i--) {
 							tmpSb.append(bk.get(i));
 						}
-						System.out.println("sb : " + sb.toString());
-						System.out.println("equ : " + equ.getText());
 						t2.set(tmpSb.toString());
 						t2.run();
 						rs.setText(t2.getResult());
@@ -1199,8 +1167,6 @@ class Calculator{
 				for(int i=bk.size()-1;i>-1;i--) {
 					tmpSb.append(bk.get(i));
 				}
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				t2.set(tmpSb.toString());
 				t2.run();
 				rs.setText(t2.getResult());
@@ -1224,8 +1190,6 @@ class Calculator{
 				sb.setLength(0);
 				sb.append(t2.getResult());
 				rs.setText("");
-				System.out.println("sb : " + sb.toString());
-				System.out.println("equ : " + equ.getText());
 				if(fonts(equ.toString()))	equ.setFont (equ.getFont ().deriveFont (16.0f));
 				else						equ.setFont (equ.getFont ().deriveFont (32.0f));
 			}
